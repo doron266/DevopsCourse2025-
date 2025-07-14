@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  drupal:
+    image: drupal:8-apache
+    ports:
+      - 80:80
+    volumes:
+      - drupal_modules:/var/www/html/modules
+      - drupal_sites:/var/www/html/sites
+      - drupal_themes:/var/www/html/themes
+      - drupal_profiles:/var/www/html/profiles
+    restart: always
+    networks:
+      - drupal
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:10
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: doronpasswd
+      POSTGRES_USER: doronuser
+      POSTGRES_DB: dorondb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - drupal
+volumes:
+  drupal_modules:
+  drupal_sites:
+  drupal_themes:
+  drupal_profiles:
+  db_data:
+networks:
+  drupal:
+    driver: bridge
